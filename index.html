@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Meine Rezepte</title>
+  <meta
+    name="description"
+    content="Meine Sammlung von Lieblingsrezepten."
+  >
+
+  <style>
+    :root {
+      --background: #f3eee6;
+      --card: #faf8f3;
+      --text: #292620;
+      --muted: #817a71;
+      --border: #ded7cc;
+      --hover: #f5f1ea;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: min(680px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 60px 0 48px;
+    }
+
+    /* ---------- HEADER ---------- */
+
+    header {
+      text-align: center;
+      margin-bottom: 38px;
+    }
+
+    .profile {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+      background: #e4dbcd;
+
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 27px;
+      color: #776956;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(32px, 8vw, 44px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      max-width: 430px;
+      margin: 0 auto;
+
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ---------- SEARCH ---------- */
+
+    .search-container {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      color: var(--muted);
+      font-size: 20px;
+
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      padding: 15px 18px 15px 47px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: rgba(250, 248, 243, 0.85);
+
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+
+      outline: none;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    #search::placeholder {
+      color: #9b958c;
+    }
+
+    #search:focus {
+      border-color: #b9ad9e;
+      box-shadow: 0 0 0 4px rgba(120, 103, 82, 0.08);
+    }
+
+    /* ---------- RECIPE LIST ---------- */
+
+    .recipe-count {
+      margin: 0 4px 11px;
+
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .recipes {
+      display: grid;
+      gap: 10px;
+    }
+
+    .recipe {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+
+      padding: 18px 20px;
+
+      border: 1px solid rgba(222, 215, 204, 0.85);
+      border-radius: 14px;
+
+      background: var(--card);
+
+      color: var(--text);
+      text-decoration: none;
+
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .recipe:hover {
+      background: var(--hover);
+      border-color: #cec5b7;
+      transform: translateY(-1px);
+    }
+
+    .recipe-name {
+      display: block;
+
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .recipe-category {
+      display: block;
+      margin-top: 4px;
+
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .arrow {
+      flex-shrink: 0;
+
+      color: var(--muted);
+      font-size: 19px;
+
+      transition: transform 0.2s ease;
+    }
+
+    .recipe:hover .arrow {
+      transform: translateX(3px);
+    }
+
+    /* ---------- EMPTY SEARCH RESULT ---------- */
+
+    .no-results {
+      display: none;
+
+      padding: 35px 10px;
+
+      text-align: center;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ---------- FOOTER ---------- */
+
+    footer {
+      margin-top: 38px;
+
+      text-align: center;
+
+      color: #9b958c;
+      font-size: 11px;
+    }
+
+    /* ---------- MOBILE ---------- */
+
+    @media (max-width: 520px) {
+      .container {
+        padding-top: 42px;
+      }
+
+      .recipe {
+        padding: 17px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+
+    <header>
+
+      <!--
+        Später kannst du das "R" durch dein Logo
+        oder Profilbild ersetzen.
+      -->
+
+      <div class="profile">R</div>
+
+      <h1>Meine Rezepte</h1>
+
+      <p class="intro">
+        Eine Sammlung meiner Lieblingsrezepte – einfach suchen,
+        anklicken und loskochen.
+      </p>
+
+    </header>
+
+
+    <!-- =========================
+         SUCHE
+         ========================= -->
+
+    <section>
+
+      <div class="search-container">
+
+        <span class="search-icon">⌕</span>
+
+        <input
+          id="search"
+          type="search"
+          placeholder="Rezept suchen …"
+          autocomplete="off"
+          aria-label="Rezept suchen"
+        >
+
+      </div>
+
+
+      <p class="recipe-count" id="recipeCount"></p>
+
+
+      <!--
+        Hier erscheinen automatisch
+        deine Rezepte.
+      -->
+
+      <div class="recipes" id="recipes"></div>
+
+
+      <div class="no-results" id="noResults">
+        Kein Rezept gefunden.
+      </div>
+
+    </section>
+
+
+    <footer>
+      © 2026 · Meine Rezepte
+    </footer>
+
+  </main>
+
+
+  <script>
+
+    /*
+    ============================================================
+    DEINE REZEPTE
+    ============================================================
+
+    HIER TRÄGST DU SPÄTER NEUE REZEPTE EIN.
+
+    Du musst lediglich:
+
+    1. Name ändern
+    2. Kategorie ändern
+    3. URL zum Originalrezept eintragen
+
+    Beispiel:
+
+    {
+      name: "Cremige Tomatenpasta",
+      category: "Pasta",
+      url: "https://www.beispiel.de/rezept"
+    },
+
+    Wichtig:
+    Zwischen den einzelnen Rezepten muss ein Komma stehen.
+    ============================================================
+    */
+
+
+    const recipes = [
+
+      {
+        name: "Cremige Tomatenpasta",
+        category: "Pasta",
+        url: "https://example.com/rezept-1"
+      },
+
+      {
+        name: "Crispy Parmesan Potatoes",
+        category: "Beilage",
+        url: "https://example.com/rezept-2"
+      },
+
+      {
+        name: "15-Minuten Asia-Nudeln",
+        category: "Asia",
+        url: "https://example.com/rezept-3"
+      },
+
+      {
+        name: "Protein Tiramisu",
+        category: "Dessert",
+        url: "https://example.com/rezept-4"
+      },
+
+      {
+        name: "Burrata-Salat",
+        category: "Salat",
+        url: "https://example.com/rezept-5"
+      }
+
+    ];
+
+
+    /*
+    ============================================================
+    AB HIER MUSST DU NICHTS MEHR ÄNDERN.
+    ============================================================
+    */
+
+    const recipeList = document.getElementById("recipes");
+    const searchInput = document.getElementById("search");
+    const recipeCount = document.getElementById("recipeCount");
+    const noResults = document.getElementById("noResults");
+
+
+    function escapeHtml(text) {
+
+      return String(text).replace(/[&<>"']/g, function(character) {
+
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[character];
+
+      });
+
+    }
+
+
+    function renderRecipes(searchTerm = "") {
+
+      const search = searchTerm.trim().toLowerCase();
+
+
+      const filteredRecipes = recipes.filter(function(recipe) {
+
+        return (
+          recipe.name.toLowerCase().includes(search) ||
+          recipe.category.toLowerCase().includes(search)
+        );
+
+      });
+
+
+      recipeList.innerHTML = filteredRecipes.map(function(recipe) {
+
+        return `
+          <a
+            class="recipe"
+            href="${recipe.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <span>
+
+              <span class="recipe-name">
+                ${escapeHtml(recipe.name)}
+              </span>
+
+              <span class="recipe-category">
+                ${escapeHtml(recipe.category)}
+              </span>
+
+            </span>
+
+            <span class="arrow">
+              →
+            </span>
+
+          </a>
+        `;
+
+      }).join("");
+
+
+      if (search) {
+
+        recipeCount.textContent =
+          filteredRecipes.length === 1
+            ? "1 Rezept gefunden"
+            : `${filteredRecipes.length} Rezepte gefunden`;
+
+      } else {
+
+        recipeCount.textContent =
+          recipes.length === 1
+            ? "1 Rezept"
+            : `${recipes.length} Rezepte`;
+
+      }
+
+
+      noResults.style.display =
+        filteredRecipes.length === 0
+          ? "block"
+          : "none";
+
+    }
+
+
+    searchInput.addEventListener("input", function(event) {
+
+      renderRecipes(event.target.value);
+
+    });
+
+
+    renderRecipes();
+
+  </script>
+
+</body>
+</html>
